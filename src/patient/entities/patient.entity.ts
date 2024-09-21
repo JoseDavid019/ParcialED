@@ -1,10 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Typeuser } from 'src/typeuser/entities/typeuser.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class Users {
+export class Patient {
     @PrimaryGeneratedColumn()
-    UsersId: number;
+    PatientId: number;
 
     @Column({length: 100,})
     FirstName: string;
@@ -15,8 +14,8 @@ export class Users {
     @Column({ type: 'date' })
     DoB: Date;
 
-    @Column({length: 15,})
-    PhoneNumber: string;
+    @Column({length: 50,})
+    Identification: string;
 
     @Column({length: 250,})
     StreetAddress: string;
@@ -24,9 +23,8 @@ export class Users {
     @Column({length: 250,})
     Email: string;
 
-    @ManyToOne(() => Typeuser, { nullable: false })
-    @JoinColumn({ name: 'TypeUserId' })
-    TypeUserId: Typeuser;
+    @Column({length: 20,})
+    Gender: string;
 
     @CreateDateColumn()
     AddedOn: Date;
