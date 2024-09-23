@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TypetravelService } from './typetravel.service';
 import { CreateTypetravelDto } from './dto/create-typetravel.dto';
 import { UpdateTypetravelDto } from './dto/update-typetravel.dto';
@@ -22,9 +22,14 @@ export class TypetravelController {
     return this.typetravelService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateTypetravelDto: UpdateTypetravelDto) {
-    return this.typetravelService.update(+id, updateTypetravelDto);
+    return this.typetravelService.put(+id, updateTypetravelDto);
+  }
+
+  @Patch(':id')
+  partialUpdate(@Param('id') id: string, @Body() updateTypetravelDto: UpdateTypetravelDto) {
+    return this.typetravelService.patch(+id, updateTypetravelDto);
   }
 
   @Delete(':id')

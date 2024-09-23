@@ -1,26 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Patient } from './entities/patient.entity';
 
 @Injectable()
 export class PatientService {
-  create(createPatientDto: CreatePatientDto) {
-    return 'This action adds a new patient';
-  }
-
+  constructor(
+    @InjectRepository(Patient)
+    private patientRepository: Repository<Patient>
+  ){}
+  
   findAll() {
-    return `This action returns all patient`;
+    return this.patientRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} patient`;
+  findOne(PatientId: number) {
+    return this.patientRepository.findOneBy({ PatientId });
   }
 
-  update(id: number, updatePatientDto: UpdatePatientDto) {
-    return `This action updates a #${id} patient`;
+  create(createPatientDto: CreatePatientDto) {
+    return this.patientRepository.save(createPatientDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} patient`;
+  async put(PatientId: number, updatePatientDto: UpdatePatientDto){
+    const { FirstName, LastName, DoB, Identification, StreetAddress, Email, Gender } = updatePatientDto;
+    if (!FirstName || !LastName || !DoB || !Identification || !StreetAddress || !Email || !Gender) {
+      return `All fields must be provided for the update: FirstName, LastName, DoB, Identification, StreetAddress, Email and Gender.`;
+    }
+    const patient = await this.patientRepository.findOneBy({ PatientId });
+    if (patient) {
+      await this.patientRepository.update(PatientId, updatePatientDto);
+      return this.patientRepository.findOneBy({ PatientId });
+    }
+    return `Entity with PatientId ${PatientId} not found.`;
+  }
+
+  async patch(PatientId: number, updatePatientDto: UpdatePatientDto) {
+    const patient = await this.patientRepository.findOneBy({ PatientId });
+    if (patient) {
+      await this.patientRepository.update(PatientId, updatePatientDto);
+      return this.patientRepository.findOneBy({ PatientId });
+    }
+    return `Entity with PatientId ${PatientId} not found`;
+  }
+
+  async remove(PatientId: number) {
+    const patient = await this.patientRepository.findOneBy({ PatientId });
+    if (patient) {
+      await this.patientRepository.delete(PatientId);
+      return `Entity with PatientId ${PatientId} deleted successfully.`;
+    }
+    return `Entity with PatientId ${PatientId} not found`;
   }
 }

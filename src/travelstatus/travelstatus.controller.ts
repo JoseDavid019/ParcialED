@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TravelstatusService } from './travelstatus.service';
 import { CreateTravelstatusDto } from './dto/create-travelstatus.dto';
 import { UpdateTravelstatusDto } from './dto/update-travelstatus.dto';
@@ -22,9 +22,14 @@ export class TravelstatusController {
     return this.travelstatusService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateTravelstatusDto: UpdateTravelstatusDto) {
-    return this.travelstatusService.update(+id, updateTravelstatusDto);
+    return this.travelstatusService.put(+id, updateTravelstatusDto);
+  }
+
+  @Patch(':id')
+  partialUpdate(@Param('id') id: string, @Body() updateTravelstatusDto: UpdateTravelstatusDto) {
+    return this.travelstatusService.patch(+id, updateTravelstatusDto);
   }
 
   @Delete(':id')

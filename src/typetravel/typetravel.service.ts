@@ -1,26 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTypetravelDto } from './dto/create-typetravel.dto';
 import { UpdateTypetravelDto } from './dto/update-typetravel.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Typetravel } from './entities/typetravel.entity';
 
 @Injectable()
 export class TypetravelService {
-  create(createTypetravelDto: CreateTypetravelDto) {
-    return 'This action adds a new typetravel';
-  }
-
+  constructor(
+    @InjectRepository(Typetravel)
+    private typetravelRepository: Repository<Typetravel>
+  ){}
+  
   findAll() {
-    return `This action returns all typetravel`;
+    return this.typetravelRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} typetravel`;
+  findOne(TypeTravelId: number) {
+    return this.typetravelRepository.findOneBy({ TypeTravelId });
   }
 
-  update(id: number, updateTypetravelDto: UpdateTypetravelDto) {
-    return `This action updates a #${id} typetravel`;
+  create(createTypetravelDto: CreateTypetravelDto) {
+    return this.typetravelRepository.save(createTypetravelDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} typetravel`;
+  async put(TypeTravelId: number, updateTypetravelDto: UpdateTypetravelDto){
+    const { Description } = updateTypetravelDto;
+    if (!Description) {
+      return `All fields must be provided for the update: Description.`;
+    }
+    const Typetravel = await this.typetravelRepository.findOneBy({ TypeTravelId });
+    if (Typetravel) {
+      await this.typetravelRepository.update(TypeTravelId, updateTypetravelDto);
+      return this.typetravelRepository.findOneBy({ TypeTravelId });
+    }
+    return `Entity with TypeTravelId ${TypeTravelId} not found.`;
+  }
+
+  async patch(TypeTravelId: number, updateTypetravelDto: UpdateTypetravelDto) {
+    const Typetravel = await this.typetravelRepository.findOneBy({ TypeTravelId });
+    if (Typetravel) {
+      await this.typetravelRepository.update(TypeTravelId, updateTypetravelDto);
+      return this.typetravelRepository.findOneBy({ TypeTravelId });
+    }
+    return `Entity with TypeTravelId ${TypeTravelId} not found`;
+  }
+
+  async remove(TypeTravelId: number) {
+    const Typetravel = await this.typetravelRepository.findOneBy({ TypeTravelId });
+    if (Typetravel) {
+      await this.typetravelRepository.delete(TypeTravelId);
+      return `Entity with TypeTravelId ${TypeTravelId} deleted successfully.`;
+    }
+    return `Entity with TypeTravelId ${TypeTravelId} not found`;
   }
 }

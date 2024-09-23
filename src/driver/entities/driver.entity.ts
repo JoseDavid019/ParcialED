@@ -12,9 +12,12 @@ export class Driver {
     @Column({ type: 'date' })
     LicenceExpired: Date;
 
+    @Column()
+    ProviderId: number;
+
     @ManyToOne(() => Provider, { nullable: false })
     @JoinColumn({ name: 'ProviderId' })
-    ProviderId: Provider;
+    Provider: Provider;
 
     @CreateDateColumn()
     AddedOn: Date;

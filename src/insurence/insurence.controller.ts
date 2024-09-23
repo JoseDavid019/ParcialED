@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Patch, Param, Delete } from '@nestjs/common';
 import { InsurenceService } from './insurence.service';
 import { CreateInsurenceDto } from './dto/create-insurence.dto';
 import { UpdateInsurenceDto } from './dto/update-insurence.dto';
@@ -22,9 +22,14 @@ export class InsurenceController {
     return this.insurenceService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateInsurenceDto: UpdateInsurenceDto) {
-    return this.insurenceService.update(+id, updateInsurenceDto);
+    return this.insurenceService.put(+id, updateInsurenceDto);
+  }
+
+  @Patch(':id')
+  partialUpdate(@Param('id') id: string, @Body() updateInsurenceDto: UpdateInsurenceDto) {
+    return this.insurenceService.patch(+id, updateInsurenceDto);
   }
 
   @Delete(':id')
